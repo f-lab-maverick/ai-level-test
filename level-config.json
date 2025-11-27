@@ -90,7 +90,7 @@
     "Lv5": {
       "name": "AI Agent Engineer",
       "nameKo": "AI 에이전트 엔지니어",
-      "shortName": "Agent",
+      "shortName": "에이전트",
       "subtitle": "Tool Calling/Memory/Graph 기반 자율 모델",
       "thresholdMin": 21,
       "thresholdMax": 23,
@@ -153,7 +153,7 @@
 
   "ui": {
     "levelOrder": ["Lv1", "Lv2", "Lv3", "Lv4", "Lv5", "Lv6"],
-    "progressBarLabels": ["활용", "기능구현", "데이터", "시스템", "Agent", "아키텍트"],
+    "progressBarLabels": ["활용", "기능구현", "데이터", "시스템", "에이전트", "아키텍트"],
     "shareMessageTemplate": "나의 AI 역량은 {level} {levelName}! ({correct}/{total} 정답)"
   }
 }
