@@ -1,12 +1,17 @@
 # AI 레벨테스트
 
-F-Lab 예비 멘티 대상 AI 활용 역량 진단 테스트.
+F-Lab 예비 멘티 대상 AI 활용 역량 진단 테스트입니다.
 
-25문항 풀고 Lv1~Lv6 중 본인 레벨 확인.
+25문항을 풀고 Lv1~Lv6 중 본인 레벨을 확인할 수 있습니다.
 
-## 실행
+## 링크
 
-`index.html` 열면 됨.
+- 테스트: https://f-lab-maverick.github.io/ai-level-test
+- 관리자: https://f-lab-maverick.github.io/ai-level-test/admin
+
+## 로컬 실행
+
+`index.html` 파일을 브라우저에서 열어주세요.
 
 ## 구조
 
