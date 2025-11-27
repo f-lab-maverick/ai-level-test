@@ -548,29 +548,29 @@
     "Q21": {
       "id": "Q21",
       "level": 3,
-      "title": "실시간 문서 업데이트 처리",
-      "question": "매일 대량의 문서가 추가/삭제되는 RAG 시스템에서 실시간 검색 품질을 유지하려면?",
+      "title": "RAG top-k 설정",
+      "question": "RAG에서 top-k를 너무 크게 설정하면 발생하는 문제는?",
       "options": [
         {
           "id": "A",
-          "text": "실시간 색인 갱신을 지원하는 벡터DB 사용"
+          "text": "검색 속도만 느려짐"
         },
         {
           "id": "B",
-          "text": "매일 밤 전체 색인을 새로 구축"
+          "text": "관련 없는 문서가 포함되어 LLM 응답 품질 저하"
         },
         {
           "id": "C",
-          "text": "문서 변경을 무시하고 주간 단위로 갱신"
+          "text": "벡터DB 저장 용량 증가"
         },
         {
           "id": "D",
-          "text": "변경된 문서만 별도 DB에 저장 후 병합 검색"
+          "text": "임베딩 품질 저하"
         }
       ],
-      "correct_answer": "A",
-      "explanation": "동적으로 문서가 변하는 환경에서는 실시간 색인 갱신(upsert/delete)을 지원하는 벡터DB가 필수입니다.",
-      "learning_point": "동적 코퍼스=HNSW 계열, 정적 대규모=IVF/PQ 고려."
+      "correct_answer": "B",
+      "explanation": "top-k가 너무 크면 관련성 낮은 문서까지 컨텍스트에 포함되어 LLM이 혼란스러워하고 응답 품질이 떨어집니다.",
+      "learning_point": "top-k는 정밀도와 재현율의 트레이드오프. 너무 작으면 정보 누락, 너무 크면 노이즈 증가."
     },
     "Q22": {
       "id": "Q22",
