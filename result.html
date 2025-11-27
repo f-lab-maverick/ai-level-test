@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F-Lab AI 역량 진단 결과</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .scale-in {
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .correct-answer { background-color: #dcfce7; border-color: #22c55e; }
+        .wrong-answer { background-color: #fee2e2; border-color: #ef4444; }
+
+        .level-bar {
+            transition: width 0.8s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div x-data="resultApp()" x-init="init()">
+
+        <!-- 헤더: 레벨 강조 -->
+        <div class="gradient-bg text-white py-16 px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-lg opacity-80 mb-2">당신의 AI 역량 레벨은</p>
+
+                <!-- 레벨 배지 (크게) -->
+                <div class="scale-in">
+                    <div class="text-8xl font-black mb-2" x-text="result.level"></div>
+                    <div class="text-3xl font-bold" x-text="levelInfo.name"></div>
+                </div>
+
+                <!-- 점수는 작게 -->
+                <div class="mt-6 text-base opacity-70">
+                    <span x-text="`${result.correct}/${result.total} 정답`"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 레벨 프로그레스 (단순화) -->
+        <div class="max-w-3xl mx-auto px-4 -mt-6">
+            <div class="bg-white rounded-2xl shadow-xl p-6 fade-in">
+                <div class="flex items-center justify-between mb-4">
+                    <template x-for="i in 6" :key="i">
+                        <div class="flex flex-col items-center flex-1">
+                            <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs transition-all"
+                                 :class="getLevelNum() >= i ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-400'">
+                                <span x-text="'Lv' + i"></span>
+                            </div>
+                            <div class="text-xs mt-1 text-center text-gray-500" x-text="levelNames[i-1]"></div>
+                        </div>
+                    </template>
+                </div>
+                <!-- 프로그레스 바 -->
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="level-bar h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                         :style="`width: ${(getLevelNum() / 6) * 100}%`"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 레벨 설명 + 첫 번째 CTA -->
+        <div class="max-w-3xl mx-auto px-4 mt-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <!-- 긍정적 메시지 먼저 -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 mb-6 border-l-4 border-green-500">
+                    <p class="font-bold text-green-800 mb-2" x-text="levelInfo.achievementTitle"></p>
+                    <p class="text-green-700 text-sm" x-text="levelInfo.achievement"></p>
+                </div>
+
+                <!-- 다음 단계 안내 -->
+                <div x-show="levelInfo.nextLevel" class="mb-6">
+                    <h3 class="font-bold text-lg text-gray-900 mb-3">
+                        다음 단계: <span class="text-purple-600" x-text="levelInfo.nextLevel + ' ' + levelInfo.nextLevelName"></span>
+                    </h3>
+                    <p class="text-gray-600 mb-4" x-text="levelInfo.nextDescription"></p>
+
+                    <ul class="space-y-2">
+                        <template x-for="tip in levelInfo.nextTips.slice(0, 3)" :key="tip">
+                            <li class="flex items-start gap-2 text-gray-700 text-sm">
+                                <span class="text-purple-500 mt-0.5">*</span>
+                                <span x-text="tip"></span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+
+                <!-- CTA 버튼 (중간 위치) -->
+                <div class="bg-purple-50 rounded-xl p-5 text-center">
+                    <p class="text-purple-800 font-semibold mb-3">AI 개발 역량을 더 키우고 싶다면?</p>
+                    <button
+                        onclick="window.location.href='https://f-lab.kr'"
+                        class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-8 rounded-xl hover:from-purple-700 hover:to-pink-700 transition transform hover:scale-105 shadow-lg">
+                        F-Lab AI 과정 알아보기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 영역별 체크리스트 (단순화) -->
+        <div class="max-w-3xl mx-auto px-4 mt-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <h2 class="text-xl font-bold mb-4 text-gray-900">영역별 결과</h2>
+
+                <div class="space-y-3">
+                    <template x-for="lvl in levelBreakdown" :key="lvl.level">
+                        <div class="flex items-center gap-4 p-3 rounded-lg"
+                             :class="lvl.passed ? 'bg-green-50' : 'bg-gray-50'">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                                 :class="lvl.passed ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-500'">
+                                <span x-text="lvl.passed ? '✓' : '-'"></span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800" x-text="lvl.level + ' ' + lvl.title"></div>
+                            </div>
+                            <div class="text-sm" :class="lvl.passed ? 'text-green-600' : 'text-gray-400'"
+                                 x-text="lvl.status"></div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- 문항별 결과 (접기/펼치기) -->
+        <div class="max-w-3xl mx-auto px-4 mt-8 mb-12">
+            <div x-data="{ showAll: false }" class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">문항별 결과</h2>
+                    <button @click="showAll = !showAll"
+                            class="text-sm text-purple-600 hover:underline">
+                        <span x-text="showAll ? '접기' : '전체 보기'"></span>
+                    </button>
+                </div>
+
+                <!-- 요약 (기본 표시) -->
+                <div x-show="!showAll" class="space-y-2">
+                    <template x-for="(q, index) in questionResults" :key="q.id">
+                        <div class="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
+                                  :class="q.isCorrect ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'"
+                                  x-text="index + 1"></span>
+                            <span class="flex-1 text-sm text-gray-700 truncate" x-text="q.title"></span>
+                            <span class="text-sm" :class="q.isCorrect ? 'text-green-600' : 'text-red-500'"
+                                  x-text="q.isCorrect ? '정답' : '오답'"></span>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- 상세 (펼쳤을 때) -->
+                <div x-show="showAll" class="space-y-4">
+                    <template x-for="(q, index) in questionResults" :key="q.id">
+                        <div class="border-2 rounded-xl overflow-hidden"
+                             :class="q.isCorrect ? 'border-green-200' : 'border-red-200'">
+                            <!-- 문항 헤더 -->
+                            <div class="px-4 py-3 flex items-center justify-between"
+                                 :class="q.isCorrect ? 'bg-green-50' : 'bg-red-50'">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-sm"
+                                          :class="q.isCorrect ? 'bg-green-500' : 'bg-red-500'"
+                                          x-text="index + 1"></span>
+                                    <span class="font-medium" x-text="q.title"></span>
+                                </div>
+                                <span class="text-sm font-medium"
+                                      :class="q.isCorrect ? 'text-green-600' : 'text-red-600'"
+                                      x-text="q.isCorrect ? '정답' : '오답'"></span>
+                            </div>
+
+                            <!-- 문항 내용 -->
+                            <div class="px-4 py-4">
+                                <p class="text-sm text-gray-800 mb-3" x-text="q.question"></p>
+
+                                <!-- 선택지 -->
+                                <div class="space-y-2 mb-4">
+                                    <template x-for="opt in q.options" :key="opt.id">
+                                        <div class="p-2 rounded-lg flex items-center gap-2 text-sm"
+                                             :class="{
+                                                 'correct-answer border-2': opt.id === q.correctAnswer,
+                                                 'wrong-answer border-2': opt.id === q.userAnswer && opt.id !== q.correctAnswer,
+                                                 'bg-gray-50': opt.id !== q.correctAnswer && opt.id !== q.userAnswer
+                                             }">
+                                            <span class="font-bold w-5" x-text="opt.id + '.'"></span>
+                                            <span x-text="opt.text" class="flex-1"></span>
+                                            <span x-show="opt.id === q.correctAnswer" class="text-green-600 font-bold text-xs">정답</span>
+                                            <span x-show="opt.id === q.userAnswer && opt.id !== q.correctAnswer" class="text-red-600 font-bold text-xs">선택</span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- 해설 -->
+                                <div class="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-500">
+                                    <p class="text-xs font-semibold text-blue-800 mb-1">해설</p>
+                                    <p class="text-sm text-blue-700" x-text="q.explanation"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 CTA -->
+        <div class="gradient-bg text-white py-10 px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="flex flex-wrap gap-3 justify-center">
+                    <button
+                        onclick="window.location.href='index.html'"
+                        class="bg-white bg-opacity-20 backdrop-blur-lg text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-opacity-30 transition">
+                        다시 테스트하기
+                    </button>
+                    <button
+                        @click="shareResult()"
+                        class="bg-white bg-opacity-20 backdrop-blur-lg text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-opacity-30 transition">
+                        결과 공유하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="result.js"></script>
+</body>
+</html>

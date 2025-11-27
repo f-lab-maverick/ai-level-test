@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F-Lab AI 역량 진단 테스트</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .question-card {
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            transform: translateX(4px);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div x-data="testApp()" x-init="init()" class="min-h-screen">
+
+        <!-- 시작 화면 -->
+        <div x-show="currentScreen === 'start'" class="gradient-bg min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 max-w-2xl w-full fade-in">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        🎯 F-Lab AI 역량 진단
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8">
+                        당신의 AI 개발 역량은 어느 레벨입니까?
+                    </p>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-8 text-left">
+                        <h3 class="font-bold text-lg mb-4 text-gray-800">📊 테스트 정보</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center">
+                                <span class="mr-2">⏱️</span>
+                                <span>소요 시간: <strong>제한 없음</strong></span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="mr-2">📝</span>
+                                <span>문항 수: <strong>25문항</strong></span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="mr-2">🎓</span>
+                                <span>레벨: <strong>Lv1 ~ Lv6</strong></span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="mr-2">💡</span>
+                                <span>실무 중심 핵심 개념 문제</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button
+                        @click="startTest()"
+                        class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-4 px-8 rounded-xl hover:from-purple-700 hover:to-pink-700 transition transform hover:scale-105 shadow-lg">
+                        테스트 시작하기 🚀
+                    </button>
+
+                    <p class="mt-4 text-sm text-gray-500">
+                        모든 문항은 실제 개발자 역량을 평가합니다
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 테스트 화면 -->
+        <div x-show="currentScreen === 'test'" class="min-h-screen py-8 px-4">
+            <!-- 진행률 바 -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-semibold text-gray-700">진행률</span>
+                        <span class="text-sm font-semibold text-purple-600" x-text="Math.round(progress) + '%'"></span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div
+                            class="gradient-bg h-full rounded-full transition-all duration-500"
+                            :style="`width: ${progress}%`">
+                        </div>
+                    </div>
+                    <div class="mt-2 flex justify-between text-xs text-gray-500">
+                        <span x-text="`문항 ${answeredCount + 1}`"></span>
+                        <span x-text="`${answeredCount} / ${estimatedTotal} 완료`"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 문항 카드 -->
+            <div class="max-w-4xl mx-auto" x-show="currentQuestion">
+                <div class="question-card bg-white rounded-2xl shadow-xl p-8 fade-in" :key="currentQuestion?.id">
+                    <!-- 문항 헤더 -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-purple-100 text-purple-700 px-4 py-1 rounded-full text-sm font-semibold">
+                                <span x-text="'Lv' + (currentQuestion?.level || 0)"></span>
+                            </span>
+                            <span class="text-gray-500 text-sm" x-text="`${answeredCount + 1} / ${estimatedTotal}`"></span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2" x-text="currentQuestion?.title"></h2>
+                    </div>
+
+                    <!-- 시나리오 -->
+                    <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-line" x-text="currentQuestion?.scenario || currentQuestion?.question"></p>
+                    </div>
+
+                    <!-- 선택지 -->
+                    <div class="space-y-3">
+                        <template x-for="(option, index) in currentQuestion?.options || []" :key="option.id">
+                            <button
+                                @click="selectAnswer(option.id)"
+                                :class="selectedAnswer === option.id ? 'selected' : ''"
+                                class="option-btn w-full text-left p-4 border-2 border-gray-200 rounded-xl hover:border-purple-300 hover:bg-purple-50">
+                                <div class="flex items-start">
+                                    <span class="font-bold text-lg mr-3 text-gray-400" x-text="option.id + '.'"></span>
+                                    <span class="flex-1 text-gray-700" x-text="option.text"></span>
+                                </div>
+                            </button>
+                        </template>
+                    </div>
+
+                    <!-- 다음 버튼 -->
+                    <div class="mt-8 flex justify-end">
+                        <button
+                            @click="submitAnswer()"
+                            :disabled="!selectedAnswer"
+                            :class="selectedAnswer ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700' : 'bg-gray-300 cursor-not-allowed'"
+                            class="px-8 py-3 text-white font-bold rounded-xl transition transform hover:scale-105 disabled:transform-none disabled:hover:scale-100">
+                            다음 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로딩 화면 -->
+        <div x-show="currentScreen === 'loading'" class="gradient-bg min-h-screen flex items-center justify-center">
+            <div class="text-center text-white">
+                <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mb-4"></div>
+                <p class="text-xl font-semibold">결과를 분석하고 있습니다...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

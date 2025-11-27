@@ -1,0 +1,159 @@
+{
+  "version": "1.1.0",
+  "description": "AI 역량 진단 레벨 설정",
+
+  "levels": {
+    "Lv1": {
+      "name": "AI Utilizer",
+      "nameKo": "AI 활용자",
+      "shortName": "활용",
+      "subtitle": "단순 GPT 사용",
+      "thresholdMin": 0,
+      "thresholdMax": 7,
+      "passRequirement": 2,
+      "totalQuestions": 3,
+      "categoryTitle": "LLM 기본/프롬프트",
+      "achievementTitle": "AI 활용의 첫 걸음!",
+      "achievement": "ChatGPT, Claude 등 AI 도구를 일상에서 활용할 수 있는 단계입니다. LLM의 기본 한계와 프롬프트 작성법을 익히면 더 효과적으로 AI를 활용할 수 있습니다.",
+      "nextLevel": "Lv2",
+      "nextLevelName": "AI Feature Builder",
+      "nextDescription": "LLM API를 직접 호출하고 기본적인 AI 기능을 구현하는 단계입니다.",
+      "nextTips": [
+        "OpenAI/Anthropic API 직접 호출해보기",
+        "Hallucination, Temperature 등 핵심 개념 학습",
+        "Few-shot, Chain-of-Thought 프롬프트 기법 익히기"
+      ]
+    },
+    "Lv2": {
+      "name": "AI Feature Builder",
+      "nameKo": "AI 기능 구현자",
+      "shortName": "기능구현",
+      "subtitle": "LLM API 사용 가능",
+      "thresholdMin": 8,
+      "thresholdMax": 12,
+      "passRequirement": 2,
+      "totalQuestions": 5,
+      "categoryTitle": "LLM 핵심 개념",
+      "achievementTitle": "LLM API를 다룰 수 있습니다!",
+      "achievement": "Hallucination의 원인, Temperature의 역할, 프롬프트 기법 등 LLM의 핵심 동작 원리를 이해하고 있습니다. API를 활용해 기본적인 AI 기능을 구현할 수 있습니다.",
+      "nextLevel": "Lv3",
+      "nextLevelName": "AI Data Integrator",
+      "nextDescription": "임베딩, 벡터 검색, Retrieval Pipeline을 구현하는 단계입니다.",
+      "nextTips": [
+        "RAG(Retrieval-Augmented Generation) 개념 학습하기",
+        "청킹 전략과 overlap의 중요성 이해하기",
+        "벡터DB(Pinecone, Weaviate 등) 직접 사용해보기"
+      ]
+    },
+    "Lv3": {
+      "name": "AI Data Integrator",
+      "nameKo": "AI 데이터 통합자",
+      "shortName": "데이터",
+      "subtitle": "임베딩/벡터/Retrieval Pipeline 구현",
+      "thresholdMin": 13,
+      "thresholdMax": 16,
+      "passRequirement": 3,
+      "totalQuestions": 5,
+      "categoryTitle": "RAG/벡터 검색",
+      "achievementTitle": "RAG Pipeline을 구축할 수 있습니다!",
+      "achievement": "임베딩, 벡터 검색, 청킹 전략, 하이브리드 검색 등 Retrieval Pipeline 구현 역량이 있습니다. 외부 데이터를 LLM과 연동하는 실무 시스템을 구축할 수 있습니다.",
+      "nextLevel": "Lv4",
+      "nextLevelName": "AI System Designer",
+      "nextDescription": "Prompt Chain, Context Flow를 조합해 복잡한 AI 시스템을 설계하는 단계입니다.",
+      "nextTips": [
+        "Function Calling으로 LLM에 외부 도구 연결하기",
+        "가드레일과 보안 레이어 설계 학습",
+        "Structured Output과 JSON Schema 활용하기"
+      ]
+    },
+    "Lv4": {
+      "name": "AI System Designer",
+      "nameKo": "AI 시스템 설계자",
+      "shortName": "시스템",
+      "subtitle": "Prompt Chain/Context Flow 조합",
+      "thresholdMin": 17,
+      "thresholdMax": 20,
+      "passRequirement": 4,
+      "totalQuestions": 7,
+      "categoryTitle": "시스템 설계/보안",
+      "achievementTitle": "프로덕션 AI 시스템을 설계할 수 있습니다!",
+      "achievement": "Function Calling, 가드레일, 리랭킹, 에러 회복 등 프로덕션 레벨의 AI 시스템 설계 역량이 있습니다. Prompt Chain과 Context Flow를 조합해 복잡한 워크플로우를 구축할 수 있습니다.",
+      "nextLevel": "Lv5",
+      "nextLevelName": "AI Agent Engineer",
+      "nextDescription": "Tool Calling, Memory, Graph 기반으로 자율적인 AI Agent를 구축하는 단계입니다.",
+      "nextTips": [
+        "AI Agent의 ReAct 패턴 깊이 이해하기",
+        "장기 메모리 설계와 구현 경험 쌓기",
+        "LangGraph 등 Agent 프레임워크 학습하기"
+      ]
+    },
+    "Lv5": {
+      "name": "AI Agent Engineer",
+      "nameKo": "AI 에이전트 엔지니어",
+      "shortName": "Agent",
+      "subtitle": "Tool Calling/Memory/Graph 기반 자율 모델",
+      "thresholdMin": 21,
+      "thresholdMax": 23,
+      "passRequirement": 2,
+      "totalQuestions": 3,
+      "categoryTitle": "AI Agent/메모리",
+      "achievementTitle": "자율 AI Agent를 구축할 수 있습니다!",
+      "achievement": "Tool Calling, Memory 설계, Graph 기반 흐름 제어 등으로 자율적으로 문제를 해결하는 AI Agent를 구축할 수 있습니다. 복잡한 멀티스텝 작업을 자동화하는 시스템을 설계할 수 있는 수준입니다.",
+      "nextLevel": "Lv6",
+      "nextLevelName": "AI Product Architect",
+      "nextDescription": "Fine-tuning, 안전 시스템, 멀티모달까지 AI 제품 전체를 설계하는 단계입니다.",
+      "nextTips": [
+        "멀티모달 RAG 인덱싱 전략 심화 학습",
+        "Fine-tuning vs RAG 트레이드오프 깊이 이해",
+        "AI 안전/컴플라이언스 시스템 설계 경험"
+      ]
+    },
+    "Lv6": {
+      "name": "AI Product Architect",
+      "nameKo": "AI 프로덕트 아키텍트",
+      "shortName": "아키텍트",
+      "subtitle": "Fine-tuning/안전시스템/멀티모달 통합 설계",
+      "thresholdMin": 24,
+      "thresholdMax": 25,
+      "passRequirement": 1,
+      "totalQuestions": 2,
+      "categoryTitle": "멀티모달/안전",
+      "achievementTitle": "AI 제품 전체를 설계할 수 있습니다!",
+      "achievement": "멀티모달 RAG 인덱싱, Fine-tuning, 안전 시스템 아키텍처 등 AI 제품의 전체 라이프사이클을 설계할 수 있습니다. 팀을 리드하며 비즈니스 문제를 AI로 해결하는 최고 수준입니다.",
+      "nextLevel": null,
+      "nextLevelName": null,
+      "nextDescription": null,
+      "nextTips": [
+        "AI 프로젝트 리딩 및 아키텍처 리뷰 경험",
+        "최신 AI 논문과 트렌드 팔로우",
+        "커뮤니티에서 지식 공유하고 멘토링하기"
+      ]
+    }
+  },
+
+  "scoring": {
+    "totalQuestions": 25,
+    "levelThresholds": {
+      "Lv6": 24,
+      "Lv5": 21,
+      "Lv4": 17,
+      "Lv3": 13,
+      "Lv2": 8,
+      "Lv1": 0
+    },
+    "levelThresholdDescriptions": {
+      "Lv6": "96%+ (24~25개)",
+      "Lv5": "84%+ (21~23개)",
+      "Lv4": "68%+ (17~20개)",
+      "Lv3": "52%+ (13~16개)",
+      "Lv2": "32%+ (8~12개)",
+      "Lv1": "~32% (0~7개)"
+    }
+  },
+
+  "ui": {
+    "levelOrder": ["Lv1", "Lv2", "Lv3", "Lv4", "Lv5", "Lv6"],
+    "progressBarLabels": ["활용", "기능구현", "데이터", "시스템", "Agent", "아키텍트"],
+    "shareMessageTemplate": "나의 AI 역량은 {level} {levelName}! ({correct}/{total} 정답)"
+  }
+}

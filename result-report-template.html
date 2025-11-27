@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F-Lab AI 역량 진단 결과 리포트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 12px 24px;
+            border-radius: 100px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .level-badge .level {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .level-badge .level-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .section {
+            padding: 40px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .section-title .emoji {
+            font-size: 24px;
+        }
+
+        .score-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .score-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .score-card .label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .competency-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .competency-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .competency-label {
+            flex: 0 0 180px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            transition: width 1s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge.strong {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge.good {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge.improve {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .badge.weak {
+            background: #ef4444;
+            color: white;
+        }
+
+        .strength-weakness {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .strength-weakness .box {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .strength-weakness .strengths {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+        }
+
+        .strength-weakness .weaknesses {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+        }
+
+        .list-items {
+            margin-top: 12px;
+        }
+
+        .list-items li {
+            margin-left: 20px;
+            margin-bottom: 8px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .learning-path {
+            background: #f3f4f6;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .learning-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .learning-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            flex: 0 0 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .step-content h4 {
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .step-content p {
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h3 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .percentile {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .percentile-text {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .percentile-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .percentile-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .strength-weakness {
+                grid-template-columns: 1fr;
+            }
+
+            .score-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 섹션 -->
+        <div class="header">
+            <h1>🎯 F-Lab AI 역량 진단 결과</h1>
+            <p>2024년 12월 20일 | 응시 시간: 15분</p>
+
+            <div class="level-badge">
+                <div class="level">Lv4</div>
+                <div class="level-name">AI System Designer</div>
+            </div>
+
+            <div class="percentile">
+                <div class="percentile-text">상위 23%</div>
+                <div class="percentile-bar">
+                    <div class="percentile-fill" style="width: 77%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 점수 개요 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="emoji">📊</span>
+                <span>점수 개요</span>
+            </h2>
+
+            <div class="score-overview">
+                <div class="score-card">
+                    <div class="value">385</div>
+                    <div class="label">총점</div>
+                </div>
+                <div class="score-card">
+                    <div class="value">18</div>
+                    <div class="label">응시 문항</div>
+                </div>
+                <div class="score-card">
+                    <div class="value">Lv4</div>
+                    <div class="label">현재 레벨</div>
+                </div>
+                <div class="score-card">
+                    <div class="value">65점</div>
+                    <div class="label">Lv5까지</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 역량 프로파일 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="emoji">💡</span>
+                <span>역량 프로파일</span>
+            </h2>
+
+            <div class="competency-grid">
+                <div class="competency-item">
+                    <div class="competency-label">
+                        Prompt Engineering
+                        <span class="badge strong">강점</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 82%">82%</div>
+                    </div>
+                </div>
+
+                <div class="competency-item">
+                    <div class="competency-label">
+                        Technical Integration
+                        <span class="badge good">양호</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%">75%</div>
+                    </div>
+                </div>
+
+                <div class="competency-item">
+                    <div class="competency-label">
+                        Product Thinking
+                        <span class="badge improve">개선</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%">65%</div>
+                    </div>
+                </div>
+
+                <div class="competency-item">
+                    <div class="competency-label">
+                        System Design
+                        <span class="badge weak">약점</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 58%">58%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 강점과 개선점 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="emoji">📈</span>
+                <span>강점과 개선 영역</span>
+            </h2>
+
+            <div class="strength-weakness">
+                <div class="box strengths">
+                    <h3>💪 강점</h3>
+                    <ul class="list-items">
+                        <li>고급 프롬프팅 기법 (Chain-of-Thought, Few-shot) 활용 능력</li>
+                        <li>API 통합 및 자동화 시스템 구축 역량</li>
+                        <li>실무 문제에 AI를 적용하는 실용적 접근</li>
+                    </ul>
+                </div>
+
+                <div class="box weaknesses">
+                    <h3>🎯 개선 필요</h3>
+                    <ul class="list-items">
+                        <li>AI 제품 ROI 계산 및 비즈니스 케이스 구성</li>
+                        <li>대규모 시스템 아키텍처 설계 역량</li>
+                        <li>멀티테넌트 및 확장 가능한 구조 이해</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 학습 경로 -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="emoji">🚀</span>
+                <span>Lv5로 성장하기 위한 학습 경로</span>
+            </h2>
+
+            <div class="learning-path">
+                <div class="learning-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>AI Product Thinking 강화 (우선순위: 높음)</h4>
+                        <p>AI 제품의 비즈니스 가치를 정량화하고, ROI를 계산하는 능력을 기르세요. B2B AI 솔루션 사례를 연구하고, 실제 PoC 설계 경험을 쌓아보세요.</p>
+                    </div>
+                </div>
+
+                <div class="learning-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>System Design 역량 향상 (우선순위: 높음)</h4>
+                        <p>RAG 시스템 설계와 AI 파이프라인 최적화를 학습하세요. 특히 확장 가능한 아키텍처와 비용 최적화 전략에 집중하세요.</p>
+                    </div>
+                </div>
+
+                <div class="learning-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>실전 프로젝트 수행 (필수)</h4>
+                        <p>학습한 내용을 실제로 적용해보세요. AI 기능을 포함한 MVP를 개발하고, 프로덕션 환경에 배포하는 경험을 쌓으세요.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px; color: #6b7280;">
+                📅 예상 성장 기간: 3-4개월
+            </p>
+        </div>
+
+        <!-- CTA 섹션 -->
+        <div class="cta-section">
+            <h3>🎓 F-Lab과 함께 성장하세요</h3>
+            <p>당신의 현재 레벨에 맞춘 맞춤형 학습 프로그램을 제공합니다</p>
+
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">AI System Architecture 과정 보기</a>
+                <a href="#" class="btn btn-secondary">무료 상담 신청</a>
+                <a href="#" class="btn btn-secondary">3개월 후 재테스트</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL 파라미터에서 데이터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 동적 데이터 업데이트 함수
+        function updateResults() {
+            const level = urlParams.get('level') || 'Lv4';
+            const score = urlParams.get('score') || '385';
+            const pe = urlParams.get('pe') || '82';
+            const pt = urlParams.get('pt') || '65';
+            const ti = urlParams.get('ti') || '75';
+            const sd = urlParams.get('sd') || '58';
+
+            // 레벨별 데이터
+            const levelData = {
+                'Lv1': {
+                    name: 'AI Utilizer',
+                    korean: 'AI 활용자',
+                    percentile: 85,
+                    nextLevel: 'Lv2',
+                    gap: 150 - parseInt(score),
+                    color: '#9ca3af'
+                },
+                'Lv2': {
+                    name: 'AI Feature Builder',
+                    korean: 'AI 기능 구현자',
+                    percentile: 65,
+                    nextLevel: 'Lv3',
+                    gap: 250 - parseInt(score),
+                    color: '#60a5fa'
+                },
+                'Lv3': {
+                    name: 'AI Data Integrator',
+                    korean: '데이터 통합형 개발자',
+                    percentile: 35,
+                    nextLevel: 'Lv4',
+                    gap: 350 - parseInt(score),
+                    color: '#34d399'
+                },
+                'Lv4': {
+                    name: 'AI System Designer',
+                    korean: 'AI 시스템 설계자',
+                    percentile: 23,
+                    nextLevel: 'Lv5',
+                    gap: 450 - parseInt(score),
+                    color: '#a78bfa'
+                },
+                'Lv5': {
+                    name: 'AI Agent Engineer',
+                    korean: '에이전트 개발자',
+                    percentile: 8,
+                    nextLevel: 'Lv6',
+                    gap: 550 - parseInt(score),
+                    color: '#f472b6'
+                },
+                'Lv6': {
+                    name: 'AI Product Architect',
+                    korean: 'AI 제품 아키텍트',
+                    percentile: 1,
+                    nextLevel: '최고 레벨',
+                    gap: 0,
+                    color: '#fbbf24'
+                }
+            };
+
+            // DOM 업데이트
+            if (level && levelData[level]) {
+                document.querySelector('.level').textContent = level;
+                document.querySelector('.level-name').textContent = levelData[level].name;
+                document.querySelector('.percentile-text').textContent = `상위 ${levelData[level].percentile}%`;
+                document.querySelector('.percentile-fill').style.width = `${100 - levelData[level].percentile}%`;
+            }
+
+            // 점수 업데이트
+            document.querySelectorAll('.score-card')[0].querySelector('.value').textContent = score;
+            document.querySelectorAll('.score-card')[3].querySelector('.value').textContent = `${levelData[level].gap}점`;
+
+            // 역량 프로파일 업데이트
+            updateCompetency(0, 'Prompt Engineering', pe);
+            updateCompetency(1, 'Technical Integration', ti);
+            updateCompetency(2, 'Product Thinking', pt);
+            updateCompetency(3, 'System Design', sd);
+        }
+
+        function updateCompetency(index, name, value) {
+            const items = document.querySelectorAll('.competency-item');
+            const item = items[index];
+            const fill = item.querySelector('.progress-fill');
+            const badge = item.querySelector('.badge');
+
+            fill.style.width = `${value}%`;
+            fill.textContent = `${value}%`;
+
+            // 배지 업데이트
+            badge.classList.remove('strong', 'good', 'improve', 'weak');
+            if (value >= 80) {
+                badge.classList.add('strong');
+                badge.textContent = '강점';
+            } else if (value >= 70) {
+                badge.classList.add('good');
+                badge.textContent = '양호';
+            } else if (value >= 60) {
+                badge.classList.add('improve');
+                badge.textContent = '개선';
+            } else {
+                badge.classList.add('weak');
+                badge.textContent = '약점';
+            }
+        }
+
+        // 페이지 로드 시 업데이트
+        window.addEventListener('DOMContentLoaded', updateResults);
+    </script>
+</body>
+</html>
