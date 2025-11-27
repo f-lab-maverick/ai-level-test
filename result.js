@@ -187,32 +187,6 @@ function resultApp() {
                     explanation: q.explanation
                 };
             });
-        },
-
-        shareResult() {
-            const url = window.location.href;
-            let text;
-
-            if (this.levelConfig) {
-                text = this.levelConfig.ui.shareMessageTemplate
-                    .replace('{level}', this.result.level)
-                    .replace('{levelName}', this.levelInfo.name)
-                    .replace('{correct}', this.result.correct)
-                    .replace('{total}', this.result.total);
-            } else {
-                text = `나의 AI 역량은 ${this.result.level} ${this.levelInfo.name}! (${this.result.correct}/${this.result.total} 정답)`;
-            }
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'F-Lab AI 역량 진단 결과',
-                    text: text,
-                    url: url
-                });
-            } else {
-                navigator.clipboard.writeText(url);
-                alert('결과 링크가 복사되었습니다!');
-            }
         }
     };
 }
